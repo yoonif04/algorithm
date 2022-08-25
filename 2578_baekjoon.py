@@ -34,8 +34,8 @@ for call in calls:
             bingo_num += 1
         if bingo_cross[1] == 5:
             bingo_num += 1
-        if bingo_num == 3:
+        if bingo_num >= 3:
             break
-    if bingo_num == 3:
+    if bingo_num >= 3:
         break
 print(cnt)
