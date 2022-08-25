@@ -11,10 +11,14 @@ for _ in range(N):
         grade_0[grade] += 1
 room = 0
 for num in grade_0:
-    if num:  # 0이 아니면
-       room += (num+1)//2
+    if num % K:  # 0이 아니면
+       room += num//K+1
+    else:
+        room += num // K
 
 for num in grade_1:
-    if num:
-        room += (num+1)//2
+    if num % K:  # 0이 아니면
+        room += num // K + 1
+    else:
+        room += num // K
 print(room)
