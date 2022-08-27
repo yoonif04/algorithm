@@ -19,7 +19,10 @@ for _ in range(num_stu):
                 if switch[num-i] == switch[num+i]:
                     switch[num-i] = 1 - switch[num-i]
                     switch[num+i] = 1 - switch[num+i]
+                else:
+                    break
+            else:
+                break
 # 출력하기
-for i in range(1, num_switch + 1):
-    print(switch[i], end=" ")
-print()
+for i in range(1, num_switch + 1, 20):
+    print(*switch[i:i+20])
