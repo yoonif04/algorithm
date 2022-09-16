@@ -23,3 +23,30 @@ for tc in range(1, T+1):
                 tree[i] += tree[i*2+1]
 
     print(f"#{tc} {tree[L]}")
+    
+    
+# 5178. 노드의 합
+def postorder(node):
+    if node <= N and not tree[node]:
+        if node*2+1 <= N:
+            tree[node] = postorder(node*2) + postorder(node*2+1)
+        elif node*2 <= N:
+            tree[node] = postorder(node*2)
+    return tree[node]
+
+
+T = int(input())
+for tc in range(1, T+1):
+    # N:노드의 개수, M:리프노드의 개수, L: 출력할 노드 번호
+    N, M, L = map(int, input().split())
+    # tree 정보
+    tree = [0] * (N+1)  # 1~N번 노드
+
+    # 리프 노드의 정보를 받아서 채우기
+    for _ in range(M):
+        leaf_node, leaf_val = map(int, input().split())
+        tree[leaf_node] = leaf_val
+
+    postorder(1)
+
+    print(f"#{tc} {tree[L]}")
