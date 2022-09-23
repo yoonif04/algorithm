@@ -1,3 +1,4 @@
+import copy
 # 상, 하, 좌, 우
 dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
@@ -9,42 +10,40 @@ RIGHT = 3
 
 
 def move():
+    global virus
     # 미생물 수만큼 반복
-    for i in range(K):
-        x, y, num, dir = virus[i]
-        if x != -1 and y != -1:
-            nx, ny = x + dx[dir-1], y + dy[dir-1]
-            # 경계선에 닿으면
-            if nx == 0 or nx == N-1:
-                if dir == UP:
-                    dir = 1
-                else:
-                    dir = 0
-                num //= 2
-            if ny == 0 or ny == N-1:
-                if dir == LEFT:
-                    dir = 3
-                else:
-                    dir = 2
-                num //= 2
-            virus[i] = [x, y, num, dir]
+    stack = []
+    while virus:
+        x, y, num, dir = virus.pop(0)
+        if x == -1 and y == -1:
+            continue
+        nx, ny = x + dx[dir], y + dy[dir]
+        if nx == 0 or nx == N-1 or ny == 0 or ny == N-1:
+            if dir == UP:
+                dir = DOWN
+            elif dir == DOWN:
+                dir = UP
+            elif dir == LEFT:
+                dir = RIGHT
+            elif dir == RIGHT:
+                dir = LEFT
+            num //= 2
+        stack.append([nx, ny, num, dir])
 
-    # 같은 위치에 있는지 확인
-    for i in range(K):
-        for j in range(i+1, K):
-            v1 = virus[i]
-            v2 = virus[j]
-            # 같은 위치라면
+    # 내림차순 정렬 - 같은 위치라면 미생물 수가 많은 것이 앞에 온다.
+    stack.sort(reverse=True)
+
+    # 중복된 길이만큼
+    for i in range(len(stack)):
+        for j in range(i+1, len(stack)):
+            v1 = stack[i]
+            v2 = stack[j]
+            # 같은 위치라면 앞의 미생물이 더 많다
             if v1[0] == v2[0] and v1[1] == v2[1]:
-                # 미생물 수 비교 후 방향 바꾸고 합치기
-                if v1[2] < v2[2]:
-                    v2[2] += v1[2]
-                    v1[2] -= v1[2]
-                    v1[0] = v1[1] = -1  # 위치 -1로
-                else:
-                    v1[2] += v2[2]
-                    v2[2] -= v1[2]
-                    v2[0] = v2[1] = -1
+                v1[2] += v2[2]
+                v2[2] -= v2[2]
+                v2[0] = v2[1] = -1
+    virus = copy.deepcopy(stack)
 
 
 T = int(input())
@@ -55,13 +54,13 @@ for tc in range(1, T+1):
     virus = []
     for _ in range(K):
         x, y, num, dir = map(int, input().split())
-        virus.append([x, y, num, dir])
+        virus.append([x, y, num, dir-1])
 
     for _ in range(M):
         move()
 
     sumV = 0
-    for i in range(K):
-        sumV += virus[i][2]
+    for v in virus:
+        sumV += v[2]
 
     print(f"#{tc} {sumV}")
